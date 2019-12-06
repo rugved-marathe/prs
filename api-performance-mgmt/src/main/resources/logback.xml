@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<springProperty scope="context" name="springAppName" source="spring.application.name"/>
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/pms.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>logs/pms.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<!-- keep 60 days' worth of history -->
+			<maxHistory>60</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}, %5p, ${HOSTNAME}, ${springAppName} , %thread, %logger{10}.%M] - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	<logger name="io.pms" level="DEBUG" additivity="false">
+		<appender-ref ref="FILE" />
+	</logger>
+	<root level="ERROR">
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>

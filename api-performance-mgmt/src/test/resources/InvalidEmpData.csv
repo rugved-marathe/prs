@@ -1,0 +1,2 @@
+ empId, empName,status, adddress, coverImage, currentDUHeadId, currentMgrId, currentProject, dateOfJoining, dateOfLeaving, designation, email, fatherName, highestEducation, motherName,passoutYear, performanceCycle, profileImage, reviewFormIds,isDUHead,isManager,isHR
+AFT00498,Mayuresh Kumbhar,ACTIVE,abc,,AFT00001,AFT00001,x,01/02/2018,,Associate  Principal Software Development Engineer,mayuresh.kumbhar+AEA-afourtech.com,abc,abc,abc,2006,OCTOBER,,,0,0,0

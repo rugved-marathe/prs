@@ -1,0 +1,6 @@
+package io.pms.api.common;
+
+public enum FormStatus {
+
+	FAILED, INCOMPLETE, PENDING, UNDER_REVIEW, FORM_RECEIVED, APPROVED, FINISHED, COMPLETED, ARCHIVED
+}

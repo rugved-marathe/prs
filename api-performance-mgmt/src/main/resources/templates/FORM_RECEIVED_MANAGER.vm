@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Notification</title>
+</head>
+<body>
+   <p>Form for ${name} has been sent for DU Head approval.</p>
+   <p>Thanks</p>
+</body> 
+</html>

@@ -1,0 +1,29 @@
+server:
+  port: 8081
+  tomcat:
+    max-threads: ${TOMCAT_MAX_THREADS:200}
+
+spring:
+  application:
+    name: api-performance-mgmt
+  data:
+    mongodb:
+     database: pms
+     host: 10.1.2.14
+     port: 27017
+     
+  
+logging:
+  level:
+    root: error
+    io.pms: debug
+
+emailServiceAPIKey : 5c4ea968c0b18d5db831b6fd
+hrEmailGroup : shashikumar.tale@afourtech.com
+emailSubject : errorReport
+emailHost: a4engmail@afourtech.com
+serverURL : http://192.168.7.196:80/projects/sendEmail
+
+#whiteListedIP : 127.0.0.1
+#finalRatingReportDir : D:\\finalRatingReportDir
+finalRatingReportDir : /root/pms/application/finalRatingReportDir

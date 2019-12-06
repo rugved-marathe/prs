@@ -1,0 +1,87 @@
+node {
+    stage('Scm Checkout'){
+        git branch: 'Dev', credentialsId: 'git-creds', url: 'https://server1.afourtech.com/PerformanceManagementSystem/PerformanceManagementSystem.git'
+    }
+    stage('SonarQube analysis') {
+            def mvnHome = tool name: 'maven3_3_9', type: 'maven'
+               withSonarQubeEnv('sonar-6') {
+                  //  Optionally use a Maven environment you've configured already
+                    sh "${mvnHome}/bin/mvn clean package sonar:sonar -v"
+                    }
+          }
+    //stage("Quality Gate Status Check") {
+     //   timeout(time: 1, unit: 'HOURS') {
+     //     waitForQualityGate abortPipeline: true
+    //}
+            
+    //}
+            
+    stage('Mvn Package') {
+        def mvnHome = tool name: 'maven3_3_9', type: 'maven'
+        def mvnCMD = "${mvnHome}/bin/mvn"
+        sh "${mvnCMD} clean package -DskipTests"
+        
+    }
+    stage('Run Unit Test'){
+        def mvnHome = tool name: 'maven3_3_9', type: 'maven'
+        def mvnCMD = "${mvnHome}/bin/mvn"
+        sh "${mvnCMD} test"
+             
+    }
+    stage("Stop and remove all containers adn images"){
+        sh '''
+            docker stop $(docker ps -a -q ) || true && docker rm $(docker ps -a -q ) || true ;
+            docker rmi $(docker images -q) || true
+        '''
+    }
+    stage('Build Docker Image'){
+        sh 'docker build --network=host -t neerajsingla/java_image:2.0.0 .'
+    }
+    stage('Push Docker Image'){
+        withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerHubPwd')]) {
+        sh "docker login -u neerajsingla -p ${dockerHubPwd}"
+    }
+        
+        sh 'docker push neerajsingla/java_image:2.0.0'
+    }
+    stage('Scm Checkout'){
+        git branch: 'dev', credentialsId: 'git-creds', url: 'https://server1.afourtech.com/PerformanceManagementSystem/AFour_PMS_UI_React.git'
+    }
+    stage('Install dependencies') {
+        sh 'npm install'
+      
+    }
+    //stage('Coverage') {
+      //  sh 'npm run coverage'
+    //}
+    stage('SonarQube analysis') {
+         sh "sudo -S /opt/sonar-scanner-3.2.0.1227-linux/bin/sonar-scanner -Dsonar.projectKey=ReactjsFE1 -Dsonar.sources=. -Dsonar.host.url=http://10.1.2.65:9000 -Dsonar.login=3e3a5bdcd14bd8f6d9dc69a5eb7c9c3ac6256ea5"
+    }
+    // stage('Unit Test') {
+    //     sh 'npm run test' 
+    // }
+    stage('Build Docker Image'){
+        sh 'docker build --network=host -t neerajsingla/react_image:2.0.0 .'
+    }
+    stage('Push Docker Image'){
+        withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerHubPwd')]) {
+        sh "docker login -u neerajsingla -p ${dockerHubPwd}"
+    }
+        sh 'docker push neerajsingla/react_image:2.0.0'
+    }
+    
+    stage('Run Container on 192-server'){
+        def dockerRun = 'docker-compose -f /home/docker-compose.yml up'
+        sshagent(['192-server']) {
+        sh '''
+            docker stop $(docker ps -a -q ) || true && docker rm $(docker ps -a -q ) || true ;
+            docker rmi $(docker images -q) || true
+        '''
+        sh 'pwd'
+        sh 'scp docker-compose.yml root@192.168.9.186:/home'
+        sh 'pwd'
+        sh "ssh -o StrictHostKeyChecking=no root@192.168.9.186 ${dockerRun}"
+
+    }
+    }
+}

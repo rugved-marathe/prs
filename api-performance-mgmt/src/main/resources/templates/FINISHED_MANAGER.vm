@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Notification</title>
+</head>
+<body>
+   <p>Form for ${name} has been approved by HR Department.</p>
+</body> 
+</html>
